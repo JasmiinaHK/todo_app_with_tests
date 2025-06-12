@@ -1,4 +1,4 @@
-ToDo Application - Testing Project
+ToDo Application - Software Testing Project (SVVT @ IBU)
 
 Project Overview
 
@@ -19,8 +19,7 @@ Project URL and GitHub Repository
 
 Live App URL: http://todolistforyou.infy.uk
 
-GitHub Repository: https://github.com/JasmiinaHK/ToDoApplication
-
+GitHub Repository: https://github.com/JasmiinaHK/todo_app_with_tests.git
 
 How to Run the Application Locally
 
@@ -49,7 +48,7 @@ Import schema.sql into your local MySQL database.
 
 Configure database credentials in config.php.
 
-Open http://localhost/ToDoApplication/ in your browser.
+Open http://localhost/todo_app_with_tests/ in your browser.
 
 Running Tests
 
