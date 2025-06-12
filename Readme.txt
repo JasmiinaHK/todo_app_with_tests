@@ -39,7 +39,7 @@ Installation Steps
 
 Clone the repository:
 
-git clone https://github.com/JasmiinaHK/ToDoApplication.git
+git clone https://github.com/JasmiinaHK/todo_app_with_tests.git
 
 Move project to your XAMPP htdocs directory.
 
