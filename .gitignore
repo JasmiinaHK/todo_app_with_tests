@@ -1,0 +1,36 @@
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# PHPUnit
+/phpunit.phar
+/phpunit.xml
+
+# Composer
+/vendor/
+composer.lock
+
+# Environment files
+.env
+config.test.php
+
+# Test files
+/run_tests.php
+/test_connection.php
+
+# Logs
+*.log
+
+# IDE specific files
+.idea/
+.vscode/
+*.sublime-workspace
+*.sublime-project
+
+# XAMPP
+/php_errors.log

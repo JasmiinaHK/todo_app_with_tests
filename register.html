@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+</head>
+<body>
+    <div class="register-container">
+        <h2>Create Your Account</h2>
+        <p>Join us and start organizing your tasks today!</p>
+        <form id="register-form" action="register.php" method="POST">
+            <input type="text" name="full_name" placeholder="Enter Your Full Name" required>
+            <input type="email" name="email" placeholder="Enter Your Email" required>
+            <input type="password" name="password" placeholder="Enter Your Password" required>
+            <input type="password" name="confirm_password" placeholder="Confirm Password" required>
+            <button type="submit">Register</button>
+        </form>
+        <p>Already have an account? <a href="login.html">Sign In</a></p>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
