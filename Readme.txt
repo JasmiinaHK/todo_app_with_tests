@@ -21,6 +21,9 @@ Live App URL: http://todolistforyou.infy.uk
 
 GitHub Repository: https://github.com/JasmiinaHK/todo_app_with_tests.git
 
+The original version of the application is available on the following GitHub repository:
+https://github.com/JasmiinaHK/ToDoApplication
+
 How to Run the Application Locally
 
 Prerequisites
