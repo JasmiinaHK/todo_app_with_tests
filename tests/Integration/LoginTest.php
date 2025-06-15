@@ -49,7 +49,8 @@ class LoginTest extends TestCase
         
         // Check if login was successful (should redirect to dashboard)
         $this->assertEquals(200, $httpCode);
-        $this->assertStringContainsString('dashboard.php', $redirectUrl);
+        $this->assertStringContainsString('"redirect":"dashboard.php"', $response);
+
         
         // Clean up
         curl_close($ch);

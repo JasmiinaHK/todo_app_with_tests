@@ -1,59 +1,72 @@
 <?php
 session_start();
-require_once "config.php"; // Konekcija sa bazom
+$config = require_once 'config.php';
+header('Content-Type: application/json');
 
-header("Content-Type: application/json"); // Postavlja da PHP vrati JSON odgovor
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $username = trim($_POST['username'] ?? '');
+    $email = trim($_POST['email'] ?? '');
+    $password = $_POST['password'] ?? '';
+    $confirm = $_POST['confirm_password'] ?? '';
 
-// Proveri da li je metod POST
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $full_name = trim($_POST['full_name']);
-    $email = trim($_POST['email']);
-    $password = trim($_POST['password']);
-    $confirm_password = trim($_POST['confirm_password']);
-
-    // Provera da li su polja prazna
-    if (empty($full_name) || empty($email) || empty($password) || empty($confirm_password)) {
-        echo json_encode(["status" => "error", "message" => "All fields are required!"]);
-        exit();
+    // Validacija unosa
+    if (empty($username) || empty($email) || empty($password) || empty($confirm)) {
+        echo json_encode(['status' => 'error', 'message' => 'All fields are required']);
+        http_response_code(400);
+        exit;
     }
 
-    // Provera da li se lozinke poklapaju
-    if ($password !== $confirm_password) {
-        echo json_encode(["status" => "error", "message" => "Passwords do not match!"]);
-        exit();
-    }
-
-    // Provera da li je email validan
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        echo json_encode(["status" => "error", "message" => "Email is not valid!"]);
-        exit();
+        echo json_encode(['status' => 'error', 'message' => 'Invalid email format']);
+        http_response_code(400);
+        exit;
     }
 
-    // Provera dužine lozinke
+    if ($password !== $confirm) {
+        echo json_encode(['status' => 'error', 'message' => 'Passwords do not match']);
+        http_response_code(400);
+        exit;
+    }
+
     if (strlen($password) < 6) {
-        echo json_encode(["status" => "error", "message" => "Password must be at least 6 characters long!"]);
-        exit();
+        echo json_encode(['status' => 'error', 'message' => 'The password must be at least 6 characters long']);
+        http_response_code(400);
+        exit;
     }
 
-    // Provera da li email već postoji u bazi
-    $stmt = $conn->prepare("SELECT id FROM users WHERE email = ?");
-    $stmt->execute([$email]);
-    if ($stmt->fetch()) {
-        echo json_encode(["status" => "error", "message" => "Email is already registered!"]);
-        exit();
-    }
+    try {
+        $pdo = new PDO(
+            "mysql:host={$config['db']['host']};dbname={$config['db']['dbname']};charset={$config['db']['charset']}",
+            $config['db']['username'],
+            $config['db']['password']
+        );
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    // Šifrovanje lozinke pomoću `password_hash`
-    $hashed_password = password_hash($password, PASSWORD_BCRYPT);
+        // Provjera duplikata e-maila
+        $stmt = $pdo->prepare("SELECT COUNT(*) FROM users WHERE email = ?");
+        $stmt->execute([$email]);
+        if ($stmt->fetchColumn() > 0) {
+            echo json_encode(['status' => 'error', 'message' => 'Email is already registered']);
+            http_response_code(400);
+            exit;
+        }
 
-    // Ubacivanje korisnika u bazu
-    $stmt = $conn->prepare("INSERT INTO users (full_name, email, password) VALUES (?, ?, ?)");
-    if ($stmt->execute([$full_name, $email, $hashed_password])) {
-        echo json_encode(["status" => "success", "message" => "Registration successful! Redirecting..."]);
-        exit();
-    } else {
-        echo json_encode(["status" => "error", "message" => "Error inserting into the database!"]);
-        exit();
+        // Hash i unos
+        $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+        $stmt = $pdo->prepare("INSERT INTO users (username, email, password) VALUES (?, ?, ?)");
+        $stmt->execute([$username, $email, $hashed_password]);
+
+        echo json_encode(['status' => 'success', 'message' => 'Registration successful']);
+        http_response_code(200);
+        exit;
+
+    } catch (PDOException $e) {
+        echo json_encode(['status' => 'error', 'message' => 'Database error: ' . $e->getMessage()]);
+        http_response_code(500);
+        exit;
     }
+} else {
+    echo json_encode(['status' => 'error', 'message' => 'Invalid request']);
+    http_response_code(405);
+    exit;
 }
-?>
